@@ -10,7 +10,7 @@ function ResumeUpload({ resumes, setResumes }) {
       <input
         type="file"
         multiple
-        accept=".pdf,.doc,.docx"
+        accept=".pdf,.docx,.txt"
         onChange={handleFileChange}
       />
 

@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import Header from "./components/Header";
 import JobDescription from "./components/JobDescription";
 import ResumeUpload from "./components/ResumeUpload";
@@ -24,9 +23,7 @@ function App() {
     }
 
     const formData = new FormData();
-
     formData.append("job_description", jobDescription);
-
     resumes.forEach((resume) => {
       formData.append("resumes", resume);
     });
@@ -40,22 +37,34 @@ function App() {
         },
       });
 
-      console.log("Response:", response);
-      console.log("Response Data:", response.data);
+      console.log("Raw Response Data:", response.data);
 
-      setResults(response.data.results);
+      // SAFEGUARD: Ensure the recommendation is an object. 
+      // If the backend sent it as a stringified JSON by accident, parse it here.
+      const rawResults = response.data.results || [];
+      const normalizedResults = rawResults.map(item => {
+        let parsedRecommendation = item.recommendation;
+
+        if (typeof parsedRecommendation === 'string') {
+          try {
+            parsedRecommendation = JSON.parse(parsedRecommendation);
+          } catch (e) {
+            console.error("Failed to parse recommendation JSON for", item.filename);
+            parsedRecommendation = null;
+          }
+        }
+
+        return {
+          ...item,
+          recommendation: parsedRecommendation
+        };
+      });
+
+      setResults(normalizedResults);
     } catch (error) {
       console.error("Complete Error:", error);
-
       if (error.response) {
-        console.log("Status:", error.response.status);
-        console.log("Data:", error.response.data);
-
-        alert(
-          `Error ${error.response.status}: ${JSON.stringify(
-            error.response.data
-          )}`
-        );
+        alert(`Error ${error.response.status}: ${JSON.stringify(error.response.data)}`);
       } else {
         alert(error.message);
       }
@@ -65,25 +74,10 @@ function App() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "1000px",
-        margin: "30px auto",
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
+    <div style={{ maxWidth: "1200px", margin: "30px auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <Header />
-
-      <JobDescription
-        jobDescription={jobDescription}
-        setJobDescription={setJobDescription}
-      />
-
-      <ResumeUpload
-        resumes={resumes}
-        setResumes={setResumes}
-      />
+      <JobDescription jobDescription={jobDescription} setJobDescription={setJobDescription} />
+      <ResumeUpload resumes={resumes} setResumes={setResumes} />
 
       <div style={{ textAlign: "center", marginBottom: "30px" }}>
         <button
@@ -92,18 +86,20 @@ function App() {
           style={{
             padding: "15px 30px",
             fontSize: "18px",
-            backgroundColor: "#2563eb",
+            backgroundColor: loading ? "#93c5fd" : "#2563eb",
             color: "white",
             border: "none",
             borderRadius: "8px",
             cursor: loading ? "not-allowed" : "pointer",
+            transition: "background-color 0.2s"
           }}
         >
-          {loading ? "Screening..." : "🚀 Screen Candidates"}
+          {loading ? "⚙️ Processing LLM Evaluation..." : "🚀 Screen Candidates"}
         </button>
       </div>
 
-      <ResultsTable results={results} />
+      {/* Only render the table if we have results */}
+      {results.length > 0 && <ResultsTable results={results} />}
     </div>
   );
 }
