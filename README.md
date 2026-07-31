@@ -108,7 +108,7 @@ Ensure you have the following installed:
         ```
     *   Start the backend server (example command, may vary based on framework):
         ```bash
-        uvicorn backend.main:app --reload
+        uvicorn main:app --reload
         ```
     *   The backend API should now be running, typically on `http://localhost:8000` or similar.
 
