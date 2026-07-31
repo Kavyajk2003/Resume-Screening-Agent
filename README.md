@@ -144,6 +144,41 @@ This project may require specific environment variables for database connections
 
 ---
 
+## Design Trade offs
+
+### 1. Free AI service vs self-hosted LLM
+
+I used Groq's free API because it provides very fast inference and doesn't require GPU infrastructure.
+
+My laptop does not support good models
+The tradeoff is dependency on an external API and rate limits.
+
+### 2. Real-time processing vs background jobs
+
+Resume screening happens synchronously after the upload.
+For a small number of resumes this provides immediate feedback, but for hundreds of resumes a background queue would be more appropriate.
+
+### 3. Prompt engineering vs complex business logic
+
+Instead of writing many backend rules, I delegated decision-making to the LLM through carefully designed prompts.
+This makes the backend simpler and easier to maintain while allowing business rules to evolve by updating prompts.
+
+### 4. Build the application as Command line tool vs full stack web application
+
+Initially, I considered a command-line approach where the recruiter would run terminal commands, provide the job description, and pass resume files as input. This approach is simpler to implement.
+However, I chose a full-stack architecture using React for the frontend and FastAPI for the backend because it provides a much better user experience, play with the live application deployed and have a edge over other candidates.
+
+## Limitations of this project
+1. External AI dependency - The recommendation generation depends on Groq's API. If the service is unavailable or rate-limited, recommendations cannot be generated.
+
+2. Limited document support - The parser currently focuses on common resume formats such as PDF, txt and DOCX. More complex layouts or scanned resumes may require OCR support.
+
+3. Prompt-based reasoning - The final hiring recommendation depends on prompt engineering. While effective, prompt outputs can vary and are not as deterministic as rule-based systems.
+
+4. Small-scale processing - Resumes are processed synchronously. For enterprise-scale screening of hundreds or thousands of resumes, asynchronous processing with a task queue would improve scalability.
+
+5. Basic ATS logic - The system doesn't yet include configurable hiring rules, recruiter feedback loops, or historical hiring data.
+
 ## Community & Governance
 
 We welcome contributions from the community to enhance and expand the capabilities of the Resume-Screening-Agent.
