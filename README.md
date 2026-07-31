@@ -29,7 +29,18 @@ This **Resume-Screening-Agent** provides a cutting-edge solution by automating a
 🔗 **Scalable & Modular Architecture**: Built with a clear separation of concerns, enabling easy integration with existing HR systems and future expansion.
 
 ---
+## Input and Output Snapshots 
 
+#### Add Job description, upload resumes:
+<img width="1504" height="894" alt="image" src="https://github.com/user-attachments/assets/46a3b431-88bc-46ea-8c63-901453919205" />
+
+#### After clicking on "Screen Candidates" button:
+<img width="1505" height="900" alt="image" src="https://github.com/user-attachments/assets/cbc25c28-1306-4962-abfd-096ac4e09a9a" />
+
+<img width="1497" height="443" alt="image" src="https://github.com/user-attachments/assets/d8514f6f-69de-4831-afcb-18812ed876c8" />
+
+
+---
 ## Technical Architecture
 
 This project is engineered with a robust, full-stack architecture, leveraging Python for powerful backend processing and JavaScript for a dynamic, responsive frontend.
