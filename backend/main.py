@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from backend.config import UPLOAD_DIR, OUTPUT_DIR
+from backend.routers import resume
 
 app = FastAPI(
     title="Resume Screening Agent",
@@ -7,6 +8,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
+app.include_router(resume.router)
 
 @app.get("/")
 def home():
