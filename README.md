@@ -1,10 +1,8 @@
 <p align="center">
-  <h1>Resume-Screening-Agent</h1>
+  <h1>Resume Screening Agent</h1>
 </p>
 
-<p align="center">
-  Revolutionize your hiring process by automating resume screening with AI-powered precision, identifying top talent faster and fairer.
-</p>
+>  Revolutionize your hiring process by automating resume screening with AI-powered precision, identifying top talent faster and fairer.
 
 ## The Strategic "Why"
 
