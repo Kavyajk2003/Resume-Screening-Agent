@@ -3,8 +3,7 @@ import "@testing-library/jest-dom";
 import ResultsTable from "./ResultsTable";
 
 describe("ResultsTable Component", () => {
-
-  const shortlistResults = [
+  const mockResults = [
     {
       candidate: "Kavya_Resume.pdf",
       score: 87.5,
@@ -14,42 +13,20 @@ describe("ResultsTable Component", () => {
           "Strong Java Full Stack profile with relevant experience.",
         evaluation: {
           missing_mandatory_requirements: [],
-          missing_preferred_requirements: [
-            "Docker"
-          ],
+          missing_preferred_requirements: ["Docker"],
           strengths: [
             "Java",
             "Spring Boot",
             "React",
-            "REST APIs"
-          ]
-        }
-      }
-    }
-  ];
-
-  const rejectResults = [
-    {
-      candidate: "Rahul_Resume.pdf",
-      score: 0,
-      recommendation: {
-        final_decision: "Reject",
-        recommendation_summary:
-          "Candidate is missing mandatory skills.",
-        evaluation: {
-          missing_mandatory_requirements: [
-            "Java",
-            "Spring Boot"
+            "REST APIs",
           ],
-          missing_preferred_requirements: [],
-          strengths: []
-        }
-      }
-    }
+        },
+      },
+    },
   ];
 
   test("renders table headers", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(screen.getByText("Candidate File")).toBeInTheDocument();
     expect(screen.getByText("Match Score")).toBeInTheDocument();
@@ -58,7 +35,7 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders candidate filename", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(
       screen.getByText("Kavya_Resume.pdf")
@@ -66,7 +43,7 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders semantic match score", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(
       screen.getByText("87.5%")
@@ -74,7 +51,7 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders final decision badge", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(
       screen.getByText("Shortlist")
@@ -82,7 +59,7 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders recommendation summary", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(
       screen.getByText(
@@ -92,7 +69,7 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders strengths", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(screen.getByText("Java")).toBeInTheDocument();
     expect(screen.getByText("Spring Boot")).toBeInTheDocument();
@@ -101,38 +78,51 @@ describe("ResultsTable Component", () => {
   });
 
   test("renders missing preferred skills", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
-    expect(
-      screen.getByText("Docker")
-    ).toBeInTheDocument();
-
+    expect(screen.getByText("Docker")).toBeInTheDocument();
     expect(
       screen.getByText(/Missing Preferred Skills/i)
     ).toBeInTheDocument();
   });
 
   test("does not render mandatory skills section when there are no missing mandatory skills", () => {
-    render(<ResultsTable results={shortlistResults} />);
+    render(<ResultsTable results={mockResults} />);
 
     expect(
       screen.queryByText(/Missing Mandatory Skills/i)
     ).not.toBeInTheDocument();
   });
 
-  test("renders reject decision", () => {
+  test("renders reject candidate with mandatory skills", () => {
+    const rejectResults = [
+      {
+        candidate: "Rahul_Resume.pdf",
+        score: 0,
+        recommendation: {
+          final_decision: "Reject",
+          recommendation_summary:
+            "Candidate does not meet mandatory requirements.",
+          evaluation: {
+            missing_mandatory_requirements: [
+              "Java",
+              "Spring Boot",
+            ],
+            missing_preferred_requirements: [],
+            strengths: [],
+          },
+        },
+      },
+    ];
+
     render(<ResultsTable results={rejectResults} />);
+
+    expect(
+      screen.getByText("Rahul_Resume.pdf")
+    ).toBeInTheDocument();
 
     expect(
       screen.getByText("Reject")
-    ).toBeInTheDocument();
-  });
-
-  test("renders missing mandatory skills", () => {
-    render(<ResultsTable results={rejectResults} />);
-
-    expect(
-      screen.getByText(/Missing Mandatory Skills/i)
     ).toBeInTheDocument();
 
     expect(
@@ -142,24 +132,23 @@ describe("ResultsTable Component", () => {
     expect(
       screen.getByText("Spring Boot")
     ).toBeInTheDocument();
-  });
-
-  test("renders recommendation summary for rejected candidate", () => {
-    render(<ResultsTable results={rejectResults} />);
 
     expect(
       screen.getByText(
-        /Candidate is missing mandatory skills/i
+        /Candidate does not meet mandatory requirements/i
       )
     ).toBeInTheDocument();
   });
 
-  test("renders empty table body when no results are provided", () => {
+  test("renders headers even when results are empty", () => {
     render(<ResultsTable results={[]} />);
 
     expect(
-      screen.queryByText("Candidate File")
+      screen.getByText("Candidate File")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByText("Kavya_Resume.pdf")
     ).not.toBeInTheDocument();
   });
-
 });

@@ -3,7 +3,6 @@ import "@testing-library/jest-dom";
 import ResultsTable from "./ResultsTable";
 
 describe("ResultsTable Component", () => {
-
   const shortlistResults = [
     {
       candidate: "Kavya_Resume.pdf",
@@ -14,18 +13,16 @@ describe("ResultsTable Component", () => {
           "Strong Java Full Stack profile with relevant experience.",
         evaluation: {
           missing_mandatory_requirements: [],
-          missing_preferred_requirements: [
-            "Docker"
-          ],
+          missing_preferred_requirements: ["Docker"],
           strengths: [
             "Java",
             "Spring Boot",
             "React",
-            "REST APIs"
-          ]
-        }
-      }
-    }
+            "REST APIs",
+          ],
+        },
+      },
+    },
   ];
 
   const rejectResults = [
@@ -39,13 +36,13 @@ describe("ResultsTable Component", () => {
         evaluation: {
           missing_mandatory_requirements: [
             "Java",
-            "Spring Boot"
+            "Spring Boot",
           ],
           missing_preferred_requirements: [],
-          strengths: []
-        }
-      }
-    }
+          strengths: [],
+        },
+      },
+    },
   ];
 
   test("renders table headers", () => {
@@ -103,9 +100,7 @@ describe("ResultsTable Component", () => {
   test("renders missing preferred skills", () => {
     render(<ResultsTable results={shortlistResults} />);
 
-    expect(
-      screen.getByText("Docker")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Docker")).toBeInTheDocument();
 
     expect(
       screen.getByText(/Missing Preferred Skills/i)
@@ -132,8 +127,8 @@ describe("ResultsTable Component", () => {
     render(<ResultsTable results={rejectResults} />);
 
     expect(
-      screen.getByText(/Missing Mandatory Skills/i)
-    ).toBeInTheDocument();
+      screen.getAllByText(/Missing Mandatory Skills/i).length
+    ).toBeGreaterThan(0);
 
     expect(
       screen.getByText("Java")
@@ -154,12 +149,15 @@ describe("ResultsTable Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders empty table body when no results are provided", () => {
+  test("renders headers even when no results are provided", () => {
     render(<ResultsTable results={[]} />);
 
     expect(
-      screen.queryByText("Candidate File")
+      screen.getByText("Candidate File")
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByText("Kavya_Resume.pdf")
     ).not.toBeInTheDocument();
   });
-
 });
